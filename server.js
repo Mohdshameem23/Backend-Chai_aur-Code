@@ -6,6 +6,6 @@ app.listen(process.env.PORT,()=>{
 })
 app.get('/',(req,res)=>{
     res.send({
-        'message':"Hello from backend"
+        'message':"Api is working "
     })
 })
