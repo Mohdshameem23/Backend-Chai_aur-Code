@@ -4,27 +4,26 @@
 // import bcrypt from "bcrypt";
 
 // 🔹 Register User
-const User=require('../controller/user.controller.js');
-const cloudinary=require('cloudinary');
+const User=require('../models/user.model');
+const cloudinary=require('../config/cloudinary');
 const fs=require('fs');
 const bcrypt=require('bcrypt')
      const registerUser = async (req, res) => {
+      console.log('register user')
   try {
-    const {userName, fullName, email, password } = req.body;
+    const { userName,fullName, email, password } = req.body;
+    console.log(fullName)
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     let imageData = {};
-
+console.log(req.file)
+let avatarUrl="";
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
-
-      imageData = {
-        url: result.secure_url,
-        public_id: result.public_id,
-      };
-
+      avatarUrl=result.secure_url;
+// console.log(imageData)
       // delete local file
       fs.unlinkSync(req.file.path);
     }
@@ -34,7 +33,7 @@ const bcrypt=require('bcrypt')
       fullName,
       email,
       password: hashedPassword,
-      profileImage: imageData,
+      avatar:avatarUrl
     });
 
     res.status(201).json({
